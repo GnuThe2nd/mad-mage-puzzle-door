@@ -191,9 +191,7 @@ def rune_choise_disable(number, pyramid_placement):
     if len(rune_states[pyramid_placement]["selected_runes"]) < 3:
         keypad_buttons[number].config(state=tk.DISABLED)
         rune_states[pyramid_placement][number] = False
-        # rune_states[pyramid_placement]["color"] = "turquoise"
-        button = buttons[pyramid_placement]
-        print(button.cget("bg"))
+        rune_states[pyramid_placement]["color"] = "turquoise"
         rune_states[pyramid_placement]["selected_runes"].append(number)
 
 
