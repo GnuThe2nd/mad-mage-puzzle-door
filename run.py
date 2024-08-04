@@ -35,16 +35,22 @@ def pyramid_generation():
         bg="gray",
         fg="black",
         text="Unlock",
-        padx=10,
+        padx=8,
         pady=5,
-        height=4,
+        height=3,
         width=7,
         command=lambda: solve(rune_states, solution),
     )
 
+    poem_label = tk.Label(
+        frame_pyramid,
+        text="Found above, now down they rest, align them right to pass the test, to see depressed ruler's sorrowed cry, while Kaisarion stands by.",
+        wraplength=190,
+    )
     # row 1
     buttons[0].grid(row=1, column=2, columnspan=2, padx=2, pady=2)
 
+    poem_label.grid(row=2, column=6, rowspan=2)
     # row 2
     buttons[1].grid(row=2, column=2, padx=2, pady=2)
     buttons[2].grid(row=2, column=3, padx=2, pady=2)
