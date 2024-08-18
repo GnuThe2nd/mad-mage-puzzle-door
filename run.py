@@ -1,5 +1,6 @@
 import tkinter as tk
 import json
+import os, sys
 
 
 def create_rune_memory():  # Rune memory creation
@@ -52,15 +53,7 @@ def pyramid_generation(rune_states):
         wraplength=220,
     )
 
-    # re_coloring pyrimid panels, depending on if solved or not
-    for i in range(21):
-        if rune_states[str(i)] != []:
-            buttons[i].config(bg="Turquoise")
-
-    for solved in correct_guesses:
-        button_thing = buttons[solved]
-        button_thing.config(bg="green")
-        button_thing.config(state=tk.DISABLED)
+    pyramid_recoloring(buttons)
 
     # row 1
     buttons[0].grid(row=1, column=2, columnspan=2, padx=2, pady=2)
@@ -153,10 +146,25 @@ def keypad_generation(frame, rune_states):
     keypad_reset.grid(row=2, column=5)
 
 
+def pyramid_recoloring(buttons):
+    # re_coloring pyrimid panels, depending on if solved or not
+    for i in range(21):
+        if rune_states[str(i)] != []:
+            buttons[i].config(bg="Turquoise")
+
+    for solved in correct_guesses:
+        button_thing = buttons[solved]
+        button_thing.config(bg="green")
+        button_thing.config(state=tk.DISABLED)
+
+
 def load_runes(image_name_list):
     returnlist = []
     for name in image_name_list:
-        img = tk.PhotoImage(file="./src/Runes/Smaller_Runes/s_" + name + ".png")
+        print(resource_path("./src/Runes/Smaller_Runes/s_" + name + ".png"))
+        img = tk.PhotoImage(
+            file=resource_path("./src/Runes/Smaller_Runes/s_" + name + ".png")
+        )
         returnlist.append(img)
     return returnlist
 
@@ -182,16 +190,14 @@ def reset(frame):
 
 
 def solve(current_solution, solution):
+    for i in range(21):
+        if current_solution[str(i)] == solution[str(i)]:
+            button = frame_pyramid.winfo_children()[i]
+            button.config(state=tk.DISABLED)
+            button.config(bg="green")
+            correct_guesses.append(i)
     if current_solution == solution:
         show_frame(frame_pyramid, frame_unlock)
-    else:
-        for i in range(21):
-            if current_solution[str(i)] == solution[str(i)]:
-                button = frame_pyramid.winfo_children()[i]
-                button.config(state=tk.DISABLED)
-                button.config(bg="green")
-
-                correct_guesses.append(i)
 
 
 def generate_solution():
@@ -223,57 +229,71 @@ def save_progress():
     main.destroy()
 
 
-# Basic Setup
-main = tk.Tk()
-main.title("Mad Mages Puzzle Door")
-main.geometry("700x420")
-main.resizable(False, False)
-main.iconbitmap("./src/icon.ico")
+def resource_path(relative_path):
+    try:
+        # PyInstaller creates a temp folder and stores the path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
 
-background_img = tk.PhotoImage(file="./src/main_background.png")
-background_label = tk.Label(main, image=background_img)
-background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    return os.path.join(base_path, relative_path)
 
-solution = generate_solution()
 
-# creates images for the runes
-rune_images = load_runes(
-    [
-        "Anarath",
-        "Angras",
-        "Halaster",
-        "Korombos",
-        "Laebos",
-        "Lammath",
-        "Nchasme",
-        "Savaros",
-        "Ullathar",
-    ]
-)
+if __name__ == "__main__":
+    # Basic Setup
+    main = tk.Tk()
+    main.title("Mad Mages Puzzle Door")
+    main.geometry("700x420")
+    main.resizable(False, False)
+    main.iconbitmap(resource_path("./src/icon.ico"))
 
-# creates/loads memory for every keypad frame
-rune_states, correct_guesses = create_rune_memory()
+    background_img = tk.PhotoImage(file=resource_path("./src/main_background.png"))
+    background_label = tk.Label(main, image=background_img)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-# Create the pyramid frame and populate
-frame_pyramid = tk.Frame(main, background="")
-frame_pyramid.pack()
-pyramid_generation(rune_states)
+    solution = generate_solution()
 
-# create keypad frames and populate
-keypad_frame_list = []
-for index in range(21):
-    new_frame = tk.Frame(main, background="")
-    keypad_generation(new_frame, rune_states[str(index)])
-    keypad_frame_list.append(new_frame)
+    # creates images for the runes
+    rune_images = load_runes(
+        [
+            "Anarath",
+            "Angras",
+            "Halaster",
+            "Korombos",
+            "Laebos",
+            "Lammath",
+            "Nchasme",
+            "Savaros",
+            "Ullathar",
+        ]
+    )
 
-# create unlock frame and populate
-frame_unlock = tk.Frame(main)
-quit_button = tk.Button(
-    frame_unlock, text="The giant door opens slowly...", command=lambda: main.destroy()
-)
-quit_button.pack(ipadx=5, ipady=5, expand=True, side="top")
+    # creates/loads memory for every keypad frame
+    rune_states, correct_guesses = create_rune_memory()
 
-# Main Loop
-frame_pyramid.tkraise()
-main.protocol("WM_DELETE_WINDOW", lambda: save_progress())
-main.mainloop()
+    # Create the pyramid frame and populate
+    frame_pyramid = tk.Frame(main, background="")
+    frame_pyramid.pack()
+    pyramid_generation(rune_states)
+
+    # create keypad frames and populate
+    keypad_frame_list = []
+    for index in range(21):
+        new_frame = tk.Frame(main, background="")
+        keypad_generation(new_frame, rune_states[str(index)])
+        keypad_frame_list.append(new_frame)
+
+    # create door unlock frame and populate
+    frame_unlock = tk.Frame(main)
+    quit_button = tk.Button(
+        frame_unlock,
+        text="The giant door opens slowly...",
+        command=lambda: save_progress(),
+    )
+    quit_button.pack(ipadx=5, ipady=5, expand=True, side="top")
+
+    # Main Loop
+    frame_pyramid.tkraise()
+    main.protocol("WM_DELETE_WINDOW", lambda: save_progress())
+
+    main.mainloop()
