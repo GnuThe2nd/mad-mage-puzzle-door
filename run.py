@@ -1,12 +1,16 @@
 import tkinter as tk
+import json
 
 
 def create_rune_memory():  # Rune memory creation
-    rune_list = []
-    for i in range(21):
-        clicked_runes = []
-        rune_list.append(clicked_runes)
-    return rune_list
+    rune_list, correct_guesses = load_save_from_json()
+    if rune_list == None:
+        rune_list = {}
+        correct_guesses = []
+        for i in range(21):
+            clicked_runes = []
+            rune_list[str(i)] = clicked_runes
+    return rune_list, correct_guesses
 
 
 def show_frame(from_frame, to_frame):
@@ -15,7 +19,7 @@ def show_frame(from_frame, to_frame):
     to_frame.pack()
 
 
-def pyramid_generation():
+def pyramid_generation(rune_states):
     buttons = []
     for i in range(21):
         button = tk.Button(
@@ -44,9 +48,20 @@ def pyramid_generation():
 
     poem_label = tk.Label(
         frame_pyramid,
-        text="Found above, now down they rest, align them right to pass the test, to see depressed ruler's sorrowed cry, while Kaisarion stands by.",
-        wraplength=190,
+        text="Keys from above, now down they rest, align them right to pass the test.        Solve with care, or fate you'll meet,       for those who err shall turn concrete.",
+        wraplength=220,
     )
+
+    # re_coloring pyrimid panels, depending on if solved or not
+    for i in range(21):
+        if rune_states[str(i)] != []:
+            buttons[i].config(bg="Turquoise")
+
+    for solved in correct_guesses:
+        button_thing = buttons[solved]
+        button_thing.config(bg="green")
+        button_thing.config(state=tk.DISABLED)
+
     # row 1
     buttons[0].grid(row=1, column=2, columnspan=2, padx=2, pady=2)
 
@@ -83,7 +98,7 @@ def pyramid_generation():
     buttons[20].grid(row=6, column=5, padx=2, pady=2)
 
 
-def keypad_generation(frame):
+def keypad_generation(frame, rune_states):
     keypad_buttons = []
     for rune_number in range(9):
         button = tk.Button(
@@ -123,6 +138,11 @@ def keypad_generation(frame):
         width=5,
     )
 
+    # disabling keys, depending on save_data.json
+    for key in rune_states:
+        keypad_buttons[key].config(state=tk.DISABLED)
+
+    # putting keypad, reset and return on screen
     count = 0
     for i in range(3):
         for j in range(3):
@@ -136,19 +156,18 @@ def keypad_generation(frame):
 def load_runes(image_name_list):
     returnlist = []
     for name in image_name_list:
-        img = tk.PhotoImage(file="./src/Runes/Smaller_Runes/" + name + "resize.png")
+        img = tk.PhotoImage(file="./src/Runes/Smaller_Runes/s_" + name + ".png")
         returnlist.append(img)
     return returnlist
 
 
 def select(index, frame):
     frame_index = keypad_frame_list.index(frame)
-    if len(rune_states[frame_index]) < 3:
+    if len(rune_states[str(frame_index)]) < 3:
         frame_children = frame.winfo_children()  # get frame children
         clicked_button = frame_children[index]  # Find the Button that was clicked
         clicked_button.config(state=tk.DISABLED)  # Disable the button
-        rune_states[frame_index].append(index)  # Add rune index to memory
-
+        rune_states[str(frame_index)].append(index)  # Add rune index to memory
         frame_pyramid.winfo_children()[frame_index].config(bg="Turquoise")
 
 
@@ -167,18 +186,41 @@ def solve(current_solution, solution):
         show_frame(frame_pyramid, frame_unlock)
     else:
         for i in range(21):
-            if current_solution[i] == solution[i]:
+            if current_solution[str(i)] == solution[str(i)]:
                 button = frame_pyramid.winfo_children()[i]
                 button.config(state=tk.DISABLED)
                 button.config(bg="green")
 
+                correct_guesses.append(i)
+
 
 def generate_solution():
-    solution = []
+    solution = {}
     for i in range(21):
         solution_part = [0, 1, 2]
-        solution.append(solution_part)
+        solution[str(i)] = solution_part
     return solution
+
+
+def save_save_to_json(solution, correct_guesses, filename="save_data.json"):
+    data = {"solution": solution, "correct_guesses": correct_guesses}
+    with open(filename, "w") as json_file:
+        json.dump(data, json_file, indent=4)
+
+
+def load_save_from_json(filename="save_data.json"):
+    try:
+        with open(filename, "r") as json_file:
+            data = json.load(json_file)
+        return data["solution"], data["correct_guesses"]
+    except FileNotFoundError:
+        print(f"File {filename} not found.")
+        return None, None
+
+
+def save_progress():
+    save_save_to_json(rune_states, correct_guesses)
+    main.destroy()
 
 
 # Basic Setup
@@ -187,6 +229,10 @@ main.title("Mad Mages Puzzle Door")
 main.geometry("700x420")
 main.resizable(False, False)
 main.iconbitmap("./src/icon.ico")
+
+background_img = tk.PhotoImage(file="./src/main_background.png")
+background_label = tk.Label(main, image=background_img)
+background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 solution = generate_solution()
 
@@ -205,19 +251,19 @@ rune_images = load_runes(
     ]
 )
 
-# creates memory for every door frame
-rune_states = create_rune_memory()
+# creates/loads memory for every keypad frame
+rune_states, correct_guesses = create_rune_memory()
 
-# Create pyramid frame and populate
-frame_pyramid = tk.Frame(main)
+# Create the pyramid frame and populate
+frame_pyramid = tk.Frame(main, background="")
 frame_pyramid.pack()
-pyramid_generation()
+pyramid_generation(rune_states)
 
 # create keypad frames and populate
 keypad_frame_list = []
 for index in range(21):
-    new_frame = tk.Frame(main)
-    keypad_generation(new_frame)
+    new_frame = tk.Frame(main, background="")
+    keypad_generation(new_frame, rune_states[str(index)])
     keypad_frame_list.append(new_frame)
 
 # create unlock frame and populate
@@ -226,6 +272,8 @@ quit_button = tk.Button(
     frame_unlock, text="The giant door opens slowly...", command=lambda: main.destroy()
 )
 quit_button.pack(ipadx=5, ipady=5, expand=True, side="top")
+
 # Main Loop
 frame_pyramid.tkraise()
+main.protocol("WM_DELETE_WINDOW", lambda: save_progress())
 main.mainloop()

@@ -6,7 +6,7 @@
 function once 3 have been selected, so the buttons are still clickable, but nothign happends 
 [X] - Change color of pyramid when smth has been placed
 [X] - Solution check
-[ ] - try to rewrite button config, so all the images and buttons wont be loaded in every time
+[X] - try to rewrite button config, so all the images and buttons wont be loaded in every time
 [ ] - Print out what has already been pressed
 [ ] - highlight rune after pressing
 [ ] - Add sounds when pressing Runes
