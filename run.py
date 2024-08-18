@@ -176,7 +176,7 @@ def reset(frame):
     frame_children = frame.winfo_children()
     for child in frame_children:
         child.config(state=tk.NORMAL)
-    rune_states[frame_index].clear()
+    rune_states[str(frame_index)].clear()
 
     frame_pyramid.winfo_children()[frame_index].config(bg="Gray")
 
