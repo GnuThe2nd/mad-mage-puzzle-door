@@ -152,7 +152,7 @@ def pyramid_recoloring(buttons):
         if rune_states[str(i)] != []:
             buttons[i].config(bg="Turquoise")
 
-    for solved in correct_guesses:
+    for solved in correct_guesses: # type: ignore
         button_thing = buttons[solved]
         button_thing.config(bg="green")
         button_thing.config(state=tk.DISABLED)
@@ -176,7 +176,7 @@ def select(index, frame):
         clicked_button = frame_children[index]  # Find the Button that was clicked
         clicked_button.config(state=tk.DISABLED)  # Disable the button
         rune_states[str(frame_index)].append(index)  # Add rune index to memory
-        frame_pyramid.winfo_children()[frame_index].config(bg="Turquoise")
+        frame_pyramid.winfo_children()[frame_index].config(bg="Turquoise") # type: ignore
 
 
 def reset(frame):
@@ -186,16 +186,16 @@ def reset(frame):
         child.config(state=tk.NORMAL)
     rune_states[str(frame_index)].clear()
 
-    frame_pyramid.winfo_children()[frame_index].config(bg="Gray")
+    frame_pyramid.winfo_children()[frame_index].config(bg="Gray") # type: ignore
 
 
 def solve(current_solution, solution):
     for i in range(21):
         if current_solution[str(i)] == solution[str(i)]:
             button = frame_pyramid.winfo_children()[i]
-            button.config(state=tk.DISABLED)
-            button.config(bg="green")
-            correct_guesses.append(i)
+            button.config(state=tk.DISABLED) # type: ignore
+            button.config(bg="green") # type: ignore
+            correct_guesses.append(i) # type: ignore
     if current_solution == solution:
         show_frame(frame_pyramid, frame_unlock)
 
@@ -250,6 +250,9 @@ if __name__ == "__main__":
     background_img = tk.PhotoImage(file=resource_path("./src/main_background.png"))
     background_label = tk.Label(main, image=background_img)
     background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+    number_1 = tk.PhotoImage(file=resource_path("./src/I.png"))
+    
 
     solution = generate_solution()
 
