@@ -12,3 +12,6 @@ Some time after I was watching DoshDoshington's Factorio Space Exploration run o
 
 ![Github Readme pyramid](https://github.com/user-attachments/assets/38209536-3dfe-47e4-9792-dc60a2386e50)
 ![Github readme keydial](https://github.com/user-attachments/assets/dcef43aa-44c0-4079-99c9-460843f3284c)
+
+## Technical information
+This project was built in Python using the TKinter GUI. It is designed to be packed into an .exe file and ran without any other addons.
