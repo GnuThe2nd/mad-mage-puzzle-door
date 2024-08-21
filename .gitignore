@@ -1,3 +1,4 @@
-
-*.txt
+ToDO.txt
 test.py
+.vscode/settings.json
+save_data.json

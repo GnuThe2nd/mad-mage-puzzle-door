@@ -161,7 +161,6 @@ def pyramid_recoloring(buttons):
 def load_runes(image_name_list):
     returnlist = []
     for name in image_name_list:
-        print(resource_path("./src/Runes/Smaller_Runes/s_" + name + ".png"))
         img = tk.PhotoImage(
             file=resource_path("./src/Runes/Smaller_Runes/s_" + name + ".png")
         )
@@ -232,7 +231,7 @@ def save_progress():
 def resource_path(relative_path):
     try:
         # PyInstaller creates a temp folder and stores the path in _MEIPASS
-        base_path = sys._MEIPASS
+        base_path = sys._MEIPASS # type: ignore
     except AttributeError:
         base_path = os.path.abspath(".")
 
