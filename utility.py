@@ -1,7 +1,8 @@
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from random import randint, choice, shuffle
 import os
 from math import ceil
+import json
 
 
 def scale_image(input_path, output_path, scale_factor):
@@ -73,8 +74,9 @@ def assign_door_to_level(dict):
     solution = dict["Solution"]
     runeset = dict["Runeset"]
 
-    for i in range(21):
-        random_level_order.append(i)
+    for i in range(22):
+        if i != 5:
+            random_level_order.append(i)
     shuffle(random_level_order)
 
     for i in random_level_order:
@@ -82,7 +84,7 @@ def assign_door_to_level(dict):
         return_runeset[i] = runeset[i]
 
     return_dict["Runeset"] = return_runeset
-    return_solution["Solution"] = return_solution
+    return_dict["Solution"] = return_solution
 
     return return_dict
 
@@ -196,24 +198,46 @@ def shift_list_to_right(lst, index):
     return lst[-index:] + lst[:-index]
 
 
-def place_runes_onto_dials(runedials):
-    background_img = Image.open("./assets/utility_assets/door_puzzle_templates/" + "1" + ".png" )
-    test_img = background_img.copy()
-    cordinates = [(618, 270), (850, 350), (970, 580), 
-                  (930, 825), (745, 990), (495, 990), 
-                  (310, 825), (265, 580), (390, 365)]
-    for index, item in enumerate(runedials):
-        rune = Image.open("./assets/utility_assets/runes/" + item + ".png")
-        test_img.paste(rune, cordinates[index], rune) #param 1: image to paste, param 2: xy, param 3: mask >:))
-    test_img.save('./assets/utility_assets/runedial_output/output.png', quality=95)
+def place_runes_onto_dials(runedials_dict):
+    myFont = ImageFont.truetype('arial.ttf', 150)
+    arrowa = Image.open("./assets/utility_assets/Arrow.png")
+
+    for index, runeset_key in enumerate(runedials_dict.keys()):
+        background_img = Image.open("./assets/utility_assets/door_puzzle_templates/" + str(index + 1) + ".png" )
+        return_img = background_img.copy()
+
+        runeset = runedials_dict[runeset_key]
+        cordinates = [(618, 270), (850, 353), (970, 580), 
+                      (930, 825), (745, 990), (495, 990), 
+                      (310, 825), (265, 580), (390, 365)]
+        
+        shift_int = randint(0,8)
+        shift_list_to_right(runeset, shift_int)
+        arrow_turn_degrees = shift_int * -40
+
+        for jndex, rune in enumerate(runeset):
+            rune = Image.open("./assets/utility_assets/runes/" + rune + ".png")
+            return_img.paste(rune, cordinates[jndex], rune) #param 1: image to paste, param 2: xy, param 3: mask >:))
+
+        arrow = arrowa.rotate(arrow_turn_degrees, center=(744, 774))
+        return_img.paste(arrow, (0, 0), arrow)
+        return_img_draw = ImageDraw.Draw(return_img)
+        return_img_draw.text((30, 30), "Level " + str(runeset_key + 1), fill=(0, 0, 0), font=myFont)
+        return_img.save("./assets/utility_assets/runedial_output/Level_" + str(runeset_key+1) + '.png', quality=95)
 
 
-#input_directory = "./assets/utility_assets/Runes"
-#output_directory = "./assets/utility_assets/Runes"
-#scale_factor = 0.75
+def save_to_json(solution_data, filename="./assets/main_assets/json/solution.json"):
+    with open(filename, "w") as json_file:
+        json.dump(solution_data, json_file, indent=4)
+
+
+input_directory = "./assets/utility_assets"
+output_directory = "./assets/utility_assets"
+scale_factor = 0.3
 
 #scale_images_in_directory(input_directory, output_directory, scale_factor)
 
-#final_dict = assign_runes_to_level()
-#final_final_dict = assign_door_to_level(final_dict)
-place_runes_onto_dials(['Laebos', 'Lammath', 'Ullathar', 'Nchasme', 'Angras', 'Savaros', 'Halaster', 'Korombos', 'Anarath'])
+runedial_dict = assign_runes_to_level()
+organised_runedial_dict = assign_door_to_level(runedial_dict)
+place_runes_onto_dials(organised_runedial_dict["Runeset"])
+save_to_json(organised_runedial_dict["Solution"])
