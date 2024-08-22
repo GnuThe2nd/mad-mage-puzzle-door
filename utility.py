@@ -34,7 +34,7 @@ def scale_images_in_directory(input_dir, output_dir, scale_factor):
     for filename in os.listdir(input_dir):
         if filename.endswith(".png"):
             input_path = os.path.join(input_dir, filename)
-            output_path = os.path.join(output_dir, "s_" + filename)
+            output_path = os.path.join(output_dir, filename)
             scale_image(input_path, output_path, scale_factor)
 
 
@@ -197,20 +197,20 @@ def shift_list_to_right(lst, index):
 
 
 def place_runes_onto_dials(runedials):
-    background_img = Image.open("./src/Level Door Puzzles/" + "1" + ".png" )
+    background_img = Image.open("./assets/utility_assets/door_puzzle_templates/" + "1" + ".png" )
     test_img = background_img.copy()
     cordinates = [(618, 270), (850, 350), (970, 580), 
                   (930, 825), (745, 990), (495, 990), 
                   (310, 825), (265, 580), (390, 365)]
     for index, item in enumerate(runedials):
-        rune = Image.open("./src/Runes/" + item + ".png")
+        rune = Image.open("./assets/utility_assets/runes/" + item + ".png")
         test_img.paste(rune, cordinates[index], rune) #param 1: image to paste, param 2: xy, param 3: mask >:))
-    test_img.save('src/runedial_output/output.png', quality=95)
+    test_img.save('./assets/utility_assets/runedial_output/output.png', quality=95)
 
 
-input_directory = "./src/Runes"
-output_directory = "./src/Runes/Smaller_runes"
-scale_factor = 0.75
+#input_directory = "./assets/utility_assets/Runes"
+#output_directory = "./assets/utility_assets/Runes"
+#scale_factor = 0.75
 
 #scale_images_in_directory(input_directory, output_directory, scale_factor)
 
