@@ -32,7 +32,7 @@ def scale_images_in_directory(input_dir, output_dir, scale_factor):
 
     # Process all PNG files in the input directory
     for filename in os.listdir(input_dir):
-        if filename.endswith(".jpg"):
+        if filename.endswith(".png"):
             input_path = os.path.join(input_dir, filename)
             output_path = os.path.join(output_dir, "s_" + filename)
             scale_image(input_path, output_path, scale_factor)
@@ -85,6 +85,7 @@ def assign_door_to_level(dict):
     return_solution["Solution"] = return_solution
 
     return return_dict
+
 
 def replace_missing_runes(partial):
     '''
@@ -171,7 +172,9 @@ def assign_runes_to_level():
 
                 if (result_copy[third_placement_index] == True and third_rune not in result_copy):
                     result_copy[third_placement_index] = third_rune # assign the third rune
+
                     return_runeset = replace_missing_runes(result_copy)
+
                     all_rune_states.append(return_runeset) # Add the result to both returnlists
                     all_rune_solutions.append(solution)
 
@@ -188,14 +191,29 @@ def assign_runes_to_level():
     return return_dict
 
 
-input_directory = "./src/"
-output_directory = "./src/main_background.png"
-scale_factor = 0.8
+def shift_list_to_right(lst, index):
+    index = index % len(lst)
+    return lst[-index:] + lst[:-index]
 
-# scale_images_in_directory(input_directory, output_directory, scale_factor)
 
-final_dict = assign_runes_to_level()
-final_final_dict = assign_door_to_level(final_dict)
+def place_runes_onto_dials(runedials):
+    background_img = Image.open("./src/Level Door Puzzles/" + "1" + ".png" )
+    test_img = background_img.copy()
+    cordinates = [(618, 270), (850, 350), (970, 580), 
+                  (930, 825), (745, 990), (495, 990), 
+                  (310, 825), (265, 580), (390, 365)]
+    for index, item in enumerate(runedials):
+        rune = Image.open("./src/Runes/" + item + ".png")
+        test_img.paste(rune, cordinates[index], rune) #param 1: image to paste, param 2: xy, param 3: mask >:))
+    test_img.save('src/runedial_output/output.png', quality=95)
 
-print(final_final_dict)
 
+input_directory = "./src/Runes"
+output_directory = "./src/Runes/Smaller_runes"
+scale_factor = 0.75
+
+#scale_images_in_directory(input_directory, output_directory, scale_factor)
+
+#final_dict = assign_runes_to_level()
+#final_final_dict = assign_door_to_level(final_dict)
+place_runes_onto_dials(['Laebos', 'Lammath', 'Ullathar', 'Nchasme', 'Angras', 'Savaros', 'Halaster', 'Korombos', 'Anarath'])

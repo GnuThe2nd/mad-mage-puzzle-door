@@ -162,7 +162,7 @@ def load_runes(image_name_list):
     returnlist = []
     for name in image_name_list:
         img = tk.PhotoImage(
-            file=resource_path("./src/Runes/Smaller_Runes/s_" + name + ".png")
+            file=resource_path("./src/Runes/Smaller_runes/s_" + name + ".png")
         )
         returnlist.append(img)
     return returnlist
