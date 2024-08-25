@@ -3,14 +3,13 @@ import json
 import os, sys
 
 
-def create_rune_memory():  # Rune memory creation
+def create_rune_memory(solution):  # Rune memory creation
     rune_list, correct_guesses = load_save_from_json()
     if rune_list == None:
         rune_list = {}
         correct_guesses = []
-        for i in range(21):
-            clicked_runes = []
-            rune_list[str(i)] = clicked_runes
+        for key in solution.keys():
+            rune_list[key] = []
     return rune_list, correct_guesses
 
 
@@ -91,7 +90,7 @@ def pyramid_generation(rune_states):
     buttons[20].grid(row=6, column=5, padx=2, pady=2)
 
 
-def keypad_generation(frame, rune_states):
+def keypad_generation(frame, keydial_rune_states):
     keypad_buttons = []
     for rune_number in range(9):
         button = tk.Button(
@@ -132,8 +131,9 @@ def keypad_generation(frame, rune_states):
     )
 
     # disabling keys, depending on save_data.json
-    for key in rune_states:
-        keypad_buttons[key].config(state=tk.DISABLED)
+    for key in keydial_rune_states:
+        rune_index = runes.index(key)
+        keypad_buttons[rune_index].config(state=tk.DISABLED)
 
     # putting keypad, reset and return on screen
     count = 0
@@ -149,8 +149,12 @@ def keypad_generation(frame, rune_states):
 def pyramid_recoloring(buttons):
     # re_coloring pyrimid panels, depending on if solved or not
     for i in range(21):
-        if rune_states[str(i)] != []:
+        j = i
+        if i >= 5: #skip the number 5 cuz that layer dont exist homeboy this code sucks what oyu expect. Might refactor later
+            j +=1
+        if rune_states[str(j)] != []:
             buttons[i].config(bg="Turquoise")
+       
 
     for solved in correct_guesses: # type: ignore
         button_thing = buttons[solved]
@@ -162,7 +166,7 @@ def load_runes(image_name_list):
     returnlist = []
     for name in image_name_list:
         img = tk.PhotoImage(
-            file=resource_path("./src/Runes/Smaller_runes/s_" + name + ".png")
+            file=resource_path("./assets/main_assets/runes/" + name + ".png")
         )
         returnlist.append(img)
     return returnlist
@@ -174,7 +178,7 @@ def select(index, frame):
         frame_children = frame.winfo_children()  # get frame children
         clicked_button = frame_children[index]  # Find the Button that was clicked
         clicked_button.config(state=tk.DISABLED)  # Disable the button
-        rune_states[str(frame_index)].append(index)  # Add rune index to memory
+        rune_states[str(frame_index)].append(runes[index])  # Add rune index to memory
         frame_pyramid.winfo_children()[frame_index].config(bg="Turquoise") # type: ignore
 
 
@@ -190,24 +194,29 @@ def reset(frame):
 
 def solve(current_solution, solution):
     for i in range(21):
+        if i >= 5:
+            i += 1 
         if current_solution[str(i)] == solution[str(i)]:
             button = frame_pyramid.winfo_children()[i]
             button.config(state=tk.DISABLED) # type: ignore
             button.config(bg="green") # type: ignore
-            correct_guesses.append(i) # type: ignore
+            if i not in correct_guesses: #type: ignore
+                correct_guesses.append(i) # type: ignore
     if current_solution == solution:
         show_frame(frame_pyramid, frame_unlock)
 
 
-def generate_solution():
-    solution = {}
-    for i in range(21):
-        solution_part = [0, 1, 2]
-        solution[str(i)] = solution_part
-    return solution
+def load_solution_from_json(filename="./assets/main_assets/json/solution.json"):
+    try:
+        with open(filename, "r") as json_file:
+            data = json.load(json_file)
+        return data
+    except FileNotFoundError:
+        print(f"File {filename} not found.")
+        return None, None
 
 
-def save_save_to_json(solution, correct_guesses, filename="save_data.json"):
+def save_to_json(solution, correct_guesses, filename="save_data.json"):
     data = {"solution": solution, "correct_guesses": correct_guesses}
     with open(filename, "w") as json_file:
         json.dump(data, json_file, indent=4)
@@ -224,7 +233,7 @@ def load_save_from_json(filename="save_data.json"):
 
 
 def save_progress():
-    save_save_to_json(rune_states, correct_guesses)
+    save_to_json(rune_states, correct_guesses)
     main.destroy()
 
 
@@ -244,20 +253,19 @@ if __name__ == "__main__":
     main.title("Mad Mages Puzzle Door")
     main.geometry("700x420")
     main.resizable(False, False)
-    main.iconbitmap(resource_path("./src/icon.ico"))
+    main.iconbitmap(resource_path("./assets/main_assets/icon.ico"))
 
-    background_img = tk.PhotoImage(file=resource_path("./src/main_background.png"))
+    background_img = tk.PhotoImage(file=resource_path("./assets/main_assets/main_background.png"))
     background_label = tk.Label(main, image=background_img)
     background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    number_1 = tk.PhotoImage(file=resource_path("./src/I.png"))
+    number_1 = tk.PhotoImage(file=resource_path("./assets/main_assets/I.png"))
     
 
-    solution = generate_solution()
+    solution = load_solution_from_json()
+    print(solution)
 
-    # creates images for the runes
-    rune_images = load_runes(
-        [
+    runes =[
             "Anarath",
             "Angras",
             "Halaster",
@@ -268,10 +276,11 @@ if __name__ == "__main__":
             "Savaros",
             "Ullathar",
         ]
-    )
+    # creates images for the runes
+    rune_images = load_runes(runes)
 
     # creates/loads memory for every keypad frame
-    rune_states, correct_guesses = create_rune_memory()
+    rune_states, correct_guesses = create_rune_memory(solution)
 
     # Create the pyramid frame and populate
     frame_pyramid = tk.Frame(main, background="")
@@ -281,6 +290,8 @@ if __name__ == "__main__":
     # create keypad frames and populate
     keypad_frame_list = []
     for index in range(21):
+        if index >= 5:
+            index = 1
         new_frame = tk.Frame(main, background="")
         keypad_generation(new_frame, rune_states[str(index)])
         keypad_frame_list.append(new_frame)
