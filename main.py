@@ -2,14 +2,6 @@ import tkinter as tk
 import json
 import os, sys
 
-def resource_path(relative_path):
-    try:
-        # PyInstaller creates a temp folder and stores the path in _MEIPASS
-        base_path = sys._MEIPASS # type: ignore
-    except AttributeError:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 
 def create_rune_memory(solution):  # Rune memory creation
     solution_data, correct_guesses = load_save_from_json()
@@ -200,8 +192,8 @@ def reset(frame):
 
 
 def solve(current_solution, solution):
-    for order_nr, runelist in current_solution.items():
-        if solution[order_nr]["solution"] == runelist:
+    for order_nr, runelist in solution.items():
+        if current_solution[order_nr] == runelist:
             i = list(solution.keys()).index(order_nr)
             button = frame_pyramid.winfo_children()[i]
             button.config(state=tk.DISABLED) # type: ignore
@@ -212,7 +204,7 @@ def solve(current_solution, solution):
         show_frame(frame_pyramid, frame_unlock)
 
 
-def load_solution_from_json(filename=resource_path("./assets/main_assets/json/solution.json")):
+def load_solution_from_json(filename="./assets/main_assets/json/solution.json"):
     try:
         with open(filename, "r") as json_file:
             data = json.load(json_file)
@@ -242,23 +234,34 @@ def save_progress():
     save_to_json(rune_states, correct_guesses)
     main.destroy()
 
+
+def resource_path(relative_path):
+    try:
+        # PyInstaller creates a temp folder and stores the path in _MEIPASS
+        base_path = sys._MEIPASS # type: ignore
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 if __name__ == "__main__":
     # Basic Setup
     main = tk.Tk()
     main.title("Mad Mages Puzzle Door")
     main.geometry("700x420")
     main.resizable(False, False)
-    main.iconbitmap(resource_path("assets/main_assets/icon.ico"))
+    main.iconbitmap(resource_path("./assets/main_assets/icon.ico"))
 
-    background_img = tk.PhotoImage(file=resource_path("assets/main_assets/main_background.png"))
+    background_img = tk.PhotoImage(file=resource_path("./assets/main_assets/main_background.png"))
     background_label = tk.Label(main, image=background_img)
     background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    number_1 = tk.PhotoImage(file=resource_path("assets/main_assets/I.png"))
+    number_1 = tk.PhotoImage(file=resource_path("./assets/main_assets/I.png"))
     
-    print("im doing this")
+
     solution = load_solution_from_json()
-    print(solution)
+
     runes =[
             "Anarath",
             "Angras",
@@ -280,7 +283,7 @@ if __name__ == "__main__":
     frame_pyramid = tk.Frame(main, background="")
     frame_pyramid.pack()
     pyramid_generation(rune_states)
-    
+
     # create keypad frames and populate
     keypad_frame_list = []
     for level, runelist  in rune_states.items():
