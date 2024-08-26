@@ -4,13 +4,13 @@ import os, sys
 
 
 def create_rune_memory(solution):  # Rune memory creation
-    rune_list, correct_guesses = load_save_from_json()
-    if rune_list == None:
-        rune_list = {}
+    solution_data, correct_guesses = load_save_from_json()
+    if solution_data == None:
+        solution_data = {}
         correct_guesses = []
         for key in solution.keys():
-            rune_list[key] = []
-    return rune_list, correct_guesses
+            solution_data[key] = []
+    return solution_data, correct_guesses
 
 
 def show_frame(from_frame, to_frame):
@@ -52,7 +52,7 @@ def pyramid_generation(rune_states):
         wraplength=220,
     )
 
-    pyramid_recoloring(buttons)
+    pyramid_recoloring(buttons, rune_states)
 
     # row 1
     buttons[0].grid(row=1, column=2, columnspan=2, padx=2, pady=2)
@@ -146,14 +146,11 @@ def keypad_generation(frame, keydial_rune_states):
     keypad_reset.grid(row=2, column=5)
 
 
-def pyramid_recoloring(buttons):
+def pyramid_recoloring(buttons, rune_states):
     # re_coloring pyrimid panels, depending on if solved or not
-    for i in range(21):
-        j = i
-        if i >= 5: #skip the number 5 cuz that layer dont exist homeboy this code sucks what oyu expect. Might refactor later
-            j +=1
-        if rune_states[str(j)] != []:
-            buttons[i].config(bg="Turquoise")
+    for index, item in enumerate(list(rune_states.keys())):
+        if rune_states[item] != []:
+            buttons[index].config(bg="Turquoise")
        
 
     for solved in correct_guesses: # type: ignore
@@ -174,29 +171,30 @@ def load_runes(image_name_list):
 
 def select(index, frame):
     frame_index = keypad_frame_list.index(frame)
-    if len(rune_states[str(frame_index)]) < 3:
+    rune_index = list(rune_states.keys())[frame_index]
+    if len(rune_states[rune_index]) < 3:
         frame_children = frame.winfo_children()  # get frame children
         clicked_button = frame_children[index]  # Find the Button that was clicked
         clicked_button.config(state=tk.DISABLED)  # Disable the button
-        rune_states[str(frame_index)].append(runes[index])  # Add rune index to memory
+        rune_states[rune_index].append(runes[index])  # Add rune index to memory
         frame_pyramid.winfo_children()[frame_index].config(bg="Turquoise") # type: ignore
 
 
 def reset(frame):
     frame_index = keypad_frame_list.index(frame)
+    rune_index = list(rune_states.keys())[frame_index]
     frame_children = frame.winfo_children()
     for child in frame_children:
         child.config(state=tk.NORMAL)
-    rune_states[str(frame_index)].clear()
+    rune_states[rune_index].clear()
 
     frame_pyramid.winfo_children()[frame_index].config(bg="Gray") # type: ignore
 
 
 def solve(current_solution, solution):
-    for i in range(21):
-        if i >= 5:
-            i += 1 
-        if current_solution[str(i)] == solution[str(i)]:
+    for order_nr, runelist in solution.items():
+        if current_solution[order_nr] == runelist:
+            i = list(solution.keys()).index(order_nr)
             button = frame_pyramid.winfo_children()[i]
             button.config(state=tk.DISABLED) # type: ignore
             button.config(bg="green") # type: ignore
@@ -213,7 +211,7 @@ def load_solution_from_json(filename="./assets/main_assets/json/solution.json"):
         return data
     except FileNotFoundError:
         print(f"File {filename} not found.")
-        return None, None
+        return None
 
 
 def save_to_json(solution, correct_guesses, filename="save_data.json"):
@@ -263,7 +261,6 @@ if __name__ == "__main__":
     
 
     solution = load_solution_from_json()
-    print(solution)
 
     runes =[
             "Anarath",
@@ -289,11 +286,9 @@ if __name__ == "__main__":
 
     # create keypad frames and populate
     keypad_frame_list = []
-    for index in range(21):
-        if index >= 5:
-            index = 1
+    for level, runelist  in rune_states.items():
         new_frame = tk.Frame(main, background="")
-        keypad_generation(new_frame, rune_states[str(index)])
+        keypad_generation(new_frame, runelist)
         keypad_frame_list.append(new_frame)
 
     # create door unlock frame and populate
