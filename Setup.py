@@ -4,8 +4,13 @@ from math import ceil
 import json
 import os, sys
 
+'''
+pyinstaller command: pyinstaller --noconfirm --onefile --console --name "Setup" --add-data "{path_to_assets_folder};assets/" --add-data "{path_to_Main.py};." "{path_to_Setup.py}"
+'''
+
 def generate_output_dir():
     os.makedirs("./output/runedials")
+
 
 def generate_random_solution():
     # The main rules for solution generation:
