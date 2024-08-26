@@ -3,3 +3,5 @@ test.py
 .vscode/settings.json
 save_data.json
 assets/utility_assets/runedial_output
+assets/main_assets/json/solution.json
+/output
