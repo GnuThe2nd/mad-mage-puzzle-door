@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 from random import randint, choice, shuffle
 from math import ceil
 import json
-from os import system
+import os, sys
 
 def generate_random_solution():
     # The main rules for solution generation:
@@ -131,8 +131,10 @@ def generate_runedial_positions(return_dict):
 
                     return_runeset = replace_missing_runes(result_copy)
 
+
+
                     all_rune_states[level] = return_runeset # Add the result to both returnlists
-                    all_rune_solutions[level] = solution
+                    all_rune_solutions[level] = {"hex":len(all_rune_states), "solution":solution}
                     break
 
             x += 1
@@ -142,8 +144,7 @@ def generate_runedial_positions(return_dict):
             break
         
     return_dict["runeset"] = all_rune_states
-    return_dict["solution"] = all_rune_solutions 
-    print(return_dict["solution"])       
+    return_dict["solution"] = all_rune_solutions     
     return return_dict
 
 
@@ -189,13 +190,29 @@ def generate_runedials(runedials_dict):
     print("All runedial generations successful!")
 
 
-def save_to_json(solution_data, filename="./assets/main_assets/json/solution.json"):
-    with open(filename, "w") as json_file:
-        json.dump(solution_data["solution"], json_file, indent=2)
+def save_to_json(solution_data):
+    exec_path="./assets/main_assets/json/solution.json"
+    human_path = "./output/solution.json"
+    with open(exec_path, "w") as exec_file:
+        json.dump(solution_data["solution"], exec_file)
+    with open(human_path, "w") as human_file:
+        json.dump(solution_data["solution"], human_file, indent=4)
 
-#def generate_main_exe_file():
-#    #pyinstaller --noconfirm --onefile --windowed --icon "C:\Users\kmpun\OneDrive\Documents\Mad Mage Puzzle Door\mad-mage-puzzle-door\assets\main_assets\icon.ico" --name "Mad Mage's Puzzle Door" --add-data 
-#    system()
+def resource_path(relative_path):
+    try:
+        # PyInstaller creates a temp folder and stores the path in _MEIPASS
+        base_path = sys._MEIPASS # type: ignore
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+def generate_main_exe_file():
+    icon_path = resource_path("./assets/main_assets/icon.ico")
+    asset_folder_path = resource_path("./assets/main_assets")
+    script_path = resource_path("./main.py")
+    command = f'pyinstaller  --noconfirm --onefile --windowed --name "Mad Mages Puzzle Door" --distpath "output" --specpath "output/TEMP" --workpath "output/TEMP" --add-data "{asset_folder_path};./assets/main_assets/" --icon "{icon_path}" "{script_path}"' 
+    os.system(command)
 
 if __name__ == "__main__":
 
@@ -213,3 +230,9 @@ if __name__ == "__main__":
     print("Saving solution to json... ", end="", flush=True)
     save_to_json(runedial_dict_complete)
     print("Done")
+
+    print("Generating .exe file...", end="", flush=True)
+    generate_main_exe_file()
+    print("Done!")
+
+    print("All generation completed!")
