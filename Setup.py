@@ -4,6 +4,9 @@ from math import ceil
 import json
 import os, sys
 
+def generate_output_dir():
+    os.makedirs("./output/runedials")
+
 def generate_random_solution():
     # The main rules for solution generation:
     # 1. rune is the one that the arrow in the middle points towards
@@ -181,7 +184,7 @@ def generate_runedials(runedials_dict):
         return_img.paste(arrow, (0, 0), arrow)
         return_img_draw = ImageDraw.Draw(return_img)
         return_img_draw.text((30, 30), f"Level {level}", fill=(0, 0, 0), font=myFont)
-        return_img.save(f"./assets/utility_assets/runedial_output/Level_{level}.png", quality=95)
+        return_img.save(f"./output/runedials/Level_{level}.png", quality=95)
 
         print("Done!")
 
@@ -213,6 +216,10 @@ def generate_main_exe_file():
     os.system(command)
 
 if __name__ == "__main__":
+
+    print("Generating output directory...", end="", flush=True)
+    generate_output_dir()
+    print("Done!")
 
     print("Generating random level order runesets... ", end="", flush=True)
     runedial_dict = generate_random_order(name="level_order")
