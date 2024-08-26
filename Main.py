@@ -213,7 +213,7 @@ def solve(current_solution, solution):
         show_frame(frame_pyramid, frame_unlock)
 
 
-def load_solution_from_json(filename=resource_path("assets/main_assets/json/solution.json")):
+def load_solution_from_json(filename=resource_path("assets/main_assets/solution.json")):
     try:
         with open(filename, "r") as json_file:
             data = json.load(json_file)
