@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 from random import randint, choice, shuffle
 from math import ceil
 import json
+from os import system
 
 def generate_random_solution():
     # The main rules for solution generation:
@@ -30,8 +31,7 @@ def generate_random_solution():
     return empty_list
 
 
-def generate_random_floor_order(): 
-    return_dict = {}
+def generate_random_order(name, append_dict={}): 
     random_level_order = []
     '''
     This generates a list with numbers 0-21, but leaves out 5, since the level it refers to
@@ -42,8 +42,8 @@ def generate_random_floor_order():
             random_level_order.append(i)
     shuffle(random_level_order)
 
-    return_dict["order"] = random_level_order
-    return return_dict
+    append_dict[name] = random_level_order
+    return append_dict
 
 
 def replace_missing_runes(partial):
@@ -75,14 +75,13 @@ def generate_runedial_positions(return_dict):
     # II Always the rune right of the "Halaster" Rune
     # III A rune ((Level / 5) rounded up) spots onwards from the second rune
     
-    order = return_dict["order"] # gives us the random order from before
     all_rune_states = {} 
     all_rune_solutions = {}
-    rune_states_length = 0
+    level_order = return_dict["level_order"]
 
-    while rune_states_length < 20: 
-        rune_states_length = len(all_rune_states)
-        level = order[rune_states_length]
+    while len(all_rune_states) < 21: 
+
+        level = level_order[len(all_rune_states)]
 
         '''
         This part below simulates the III rule of soliving the puzzle by doing the calculations early. since, players look at levels 1-21, 
@@ -104,7 +103,7 @@ def generate_runedial_positions(return_dict):
         '''
 
         x = 0
-        while x < 20: #basically giving it up to 20 times to try and randomly fix it :)
+        while x < 20: # basically it tries up to 20 times to randomly add the last rune:)
             result_copy = result.copy()
 
             '''
@@ -134,7 +133,6 @@ def generate_runedial_positions(return_dict):
 
                     all_rune_states[level] = return_runeset # Add the result to both returnlists
                     all_rune_solutions[level] = solution
-
                     break
 
             x += 1
@@ -144,8 +142,10 @@ def generate_runedial_positions(return_dict):
             break
         
     return_dict["runeset"] = all_rune_states
-    return_dict["solution"] = all_rune_solutions        
+    return_dict["solution"] = all_rune_solutions 
+    print(return_dict["solution"])       
     return return_dict
+
 
 def shift_list_to_right(lst, index):
     index = index % len(lst)
@@ -156,19 +156,16 @@ def generate_runedials(runedials_dict):
 
     myFont = ImageFont.truetype('arial.ttf', 150)
     arrowa = Image.open("./assets/utility_assets/Arrow.png")
+    level_order = runedials_dict["level_order"]
 
-    for index, order_nr in enumerate(runedials_dict["order"]):
+    for hex_index, level in enumerate(level_order):
 
-        if index >= 5:
-            index += 1
-        level = str(index + 1)
+        print(f"Level {level}... ", end="", flush=True)
 
-        print("Level " + level + "... ", end="", flush=True)
-
-        background_img = Image.open(f"./assets/utility_assets/door_puzzle_templates/{order_nr}.png" )
+        background_img = Image.open(f"./assets/utility_assets/door_puzzle_templates/{hex_index}.png" )
         return_img = background_img.copy()
         
-        runeset = runedials_dict["runeset"][order_nr]
+        runeset = runedials_dict["runeset"][level]
         cordinates = [(618, 270), (850, 353), (970, 580), 
                       (930, 825), (745, 990), (495, 990), 
                       (310, 825), (265, 580), (390, 365)]
@@ -177,14 +174,14 @@ def generate_runedials(runedials_dict):
         runeset = shift_list_to_right(runeset, shift_int)
         arrow_turn_degrees = shift_int * -40
 
-        for jndex, rune in enumerate(runeset):
+        for index, rune in enumerate(runeset):
             rune = Image.open(f"./assets/utility_assets/runes/{rune}.png")
-            return_img.paste(rune, cordinates[jndex], rune) #param 1: image to paste, param 2: xy, param 3: mask >:))
+            return_img.paste(rune, cordinates[index], rune) #param 1: image to paste, param 2: xy, param 3: mask >:))
 
         arrow = arrowa.rotate(arrow_turn_degrees, center=(745, 775))
         return_img.paste(arrow, (0, 0), arrow)
         return_img_draw = ImageDraw.Draw(return_img)
-        return_img_draw.text((30, 30), "Level " + level, fill=(0, 0, 0), font=myFont)
+        return_img_draw.text((30, 30), f"Level {level}", fill=(0, 0, 0), font=myFont)
         return_img.save(f"./assets/utility_assets/runedial_output/Level_{level}.png", quality=95)
 
         print("Done!")
@@ -196,21 +193,23 @@ def save_to_json(solution_data, filename="./assets/main_assets/json/solution.jso
     with open(filename, "w") as json_file:
         json.dump(solution_data["solution"], json_file, indent=2)
 
-
+#def generate_main_exe_file():
+#    #pyinstaller --noconfirm --onefile --windowed --icon "C:\Users\kmpun\OneDrive\Documents\Mad Mage Puzzle Door\mad-mage-puzzle-door\assets\main_assets\icon.ico" --name "Mad Mage's Puzzle Door" --add-data 
+#    system()
 
 if __name__ == "__main__":
 
-    print("Organizing runesets... ", end="", flush=True)
-    runedial_dict_order = generate_random_floor_order()
+    print("Generating random level order runesets... ", end="", flush=True)
+    runedial_dict = generate_random_order(name="level_order")
     print("Done!")
 
     print("Generating a runedial positions... ", end="", flush=True)
-    runedial_dict_complete = generate_runedial_positions(runedial_dict_order)
+    runedial_dict_complete = generate_runedial_positions(runedial_dict)
     print("Done!")
 
     print("Generating Runeset Images:")
     generate_runedials(runedial_dict_complete)
 
-    print("Saving to Solution.json... ", end="", flush=True)
+    print("Saving solution to json... ", end="", flush=True)
     save_to_json(runedial_dict_complete)
     print("Done")
