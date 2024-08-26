@@ -9,7 +9,7 @@ pyinstaller command: pyinstaller --noconfirm --onefile --console --name "Setup" 
 '''
 
 def generate_output_dir():
-    os.makedirs("./output/runedials")
+    os.makedirs("./output/runedials", exist_ok=True)
 
 
 def generate_random_solution():
@@ -162,14 +162,14 @@ def shift_list_to_right(lst, index):
 def generate_runedials(runedials_dict):
 
     myFont = ImageFont.truetype('arial.ttf', 150)
-    arrowa = Image.open("./assets/utility_assets/Arrow.png")
+    arrowa = Image.open(resource_path("./assets/utility_assets/Arrow.png"))
     level_order = runedials_dict["level_order"]
 
     for hex_index, level in enumerate(level_order):
 
         print(f"Level {level}... ", end="", flush=True)
 
-        background_img = Image.open(f"./assets/utility_assets/door_puzzle_templates/{hex_index}.png" )
+        background_img = Image.open(resource_path(f"./assets/utility_assets/door_puzzle_templates/{hex_index}.png" ))
         return_img = background_img.copy()
         
         runeset = runedials_dict["runeset"][level]
@@ -182,7 +182,7 @@ def generate_runedials(runedials_dict):
         arrow_turn_degrees = shift_int * -40
 
         for index, rune in enumerate(runeset):
-            rune = Image.open(f"./assets/utility_assets/runes/{rune}.png")
+            rune = Image.open(resource_path(f"./assets/utility_assets/runes/{rune}.png"))
             return_img.paste(rune, cordinates[index], rune) #param 1: image to paste, param 2: xy, param 3: mask >:))
 
         arrow = arrowa.rotate(arrow_turn_degrees, center=(745, 775))
@@ -197,7 +197,7 @@ def generate_runedials(runedials_dict):
 
 
 def save_to_json(solution_data):
-    exec_path="./assets/main_assets/json/solution.json"
+    exec_path=resource_path("assets/main_assets/solution.json")
     human_path = "./output/solution.json"
     with open(exec_path, "w") as exec_file:
         json.dump(solution_data["solution"], exec_file)
