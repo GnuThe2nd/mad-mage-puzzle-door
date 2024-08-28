@@ -12,7 +12,6 @@ This is a puzzle door add-on for the D&D module "Waterdeep: Dungeon of the Mad M
 In summery, the project adds a puzzle door for every level (except Lost Level) and culminates with the giant puzzle door at the Mad Mages Lair.
 
 - [The Mad Mages Puzzle Door V.1](#the-mad-mages-puzzle-door-v1)
-  - [About this project](#about-this-project)
   - [The story of how it came to be](#the-story-of-how-it-came-to-be)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -30,10 +29,6 @@ In summery, the project adds a puzzle door for every level (except Lost Level) a
       - [Step 3. - Solving the Runedials](#step-3---solving-the-runedials)
   - [Future Developement plans](#future-developement-plans)
   - [Author](#author)
-
-
-## About this project
-This project was
 
 ## The story of how it came to be
 I have been a DM since 2019 and had been wanting to run "Waterdeep: Dungeon of the Mad Mage" for my group for a while, combined with "Keys From the Golden Vault". I told my players that this would be a stealthy heist campaign and they all made fragile characters, with great out of combat utility but little combat power. Now, for those who don't know, the Mad Mage's Dungeon is not exactly what anyone would call "safe". Thus it came apparent to me, that my players would most likely try to sneak through the entire thing, with zero to non interraction with any of the cool stuff. 
