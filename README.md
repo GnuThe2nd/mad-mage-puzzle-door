@@ -89,13 +89,14 @@ The Puzzle has mainly 2 components:
 ### Runedial Handouts
 
 An example runedial looks like this:
-![Runedial_example_image]()
+
 
 It's 4 components are:
 1. Level indicator 
 2. Runedial
 3. Arrow
 4. Hexagon Scheme
+![Level_1_example](https://github.com/user-attachments/assets/59bce3b0-c48e-43b4-98b2-7c57d9496657)
 
 You'll find an explanetion for all of them below.
 
@@ -132,8 +133,7 @@ As stated in the hexagon chapter, the hexagons, when overlapped with eachother s
 #### Step 2. - Translation
 
 The bigger hexagon is meant to represent the location of the runedial and the smaller hexagon an adjacent runedials. So this pyramid can be translated as such. Step 2 is finished once the pyramid has been translated.
-
-[pyramid_translation.img]
+![Translated Pyramid](https://github.com/user-attachments/assets/80ba2a08-9481-4fa8-b03c-6ab273d488e0)
 
 #### Step 3. - Solving the Runedials
 
