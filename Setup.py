@@ -5,6 +5,7 @@ import json
 import os, sys
 
 '''
+Compile command:
 pyinstaller command: pyinstaller --noconfirm --onefile --console --name "Setup" --add-data "{path_to_assets_folder};assets/" --add-data "{path_to_Main.py};." "{path_to_Setup.py}"
 '''
 

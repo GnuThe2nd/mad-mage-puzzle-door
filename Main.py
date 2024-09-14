@@ -2,6 +2,10 @@ import tkinter as tk
 import json
 import os, sys
 
+'''
+Resource handling, file and path shinanigans
+''' 
+
 def resource_path(relative_path):
     try:
         # PyInstaller creates a temp folder and stores the path in _MEIPASS
@@ -12,23 +16,91 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+def load_solution_from_json(filename=resource_path("assets/main_assets/solution.json")):
+    try:
+        with open(filename, "r") as json_file:
+            data = json.load(json_file)
+        return data
+    except FileNotFoundError:
+        print(f"Solution file {filename} not found.")
+        return {}
+
+
+def save_to_json(solution, correct_guesses, filename="save_data.json"):
+    data = {"solution": solution, "correct_guesses": correct_guesses}
+    with open(filename, "w") as json_file:
+        json.dump(data, json_file, indent=4)
+
+
+def load_save_from_json(filename="save_data.json"):
+    try:
+        with open(filename, "r") as json_file:
+            data = json.load(json_file)
+        return data["solution"], data["correct_guesses"]
+    except FileNotFoundError:
+        print(f"Save data file {filename} not found.")
+        return {}, []
+
+
+def save_progress():
+    save_to_json(rune_states, correct_guesses)
+    main.destroy()
+
+
+def load_rune_images(image_name_list):
+    returnlist = []
+    for name in image_name_list:
+        img = tk.PhotoImage(
+            file=resource_path("./assets/main_assets/runes/" + name + ".png")
+        )
+        returnlist.append(img)
+    return returnlist
+
+
+'''
+Generation and population
+'''
+
+def basic_setup():
+
+    main = tk.Tk()
+    main.title("Mad Mages Puzzle Door")
+    main.geometry("700x420")
+    main.resizable(False, False)
+    main.iconbitmap(resource_path("assets/main_assets/icon.ico"))
+
+    #number_1 = tk.PhotoImage(file=resource_path("assets/main_assets/I.png"))
+    
+    return main
+
+
 def create_rune_memory(solution):  # Rune memory creation
     solution_data, correct_guesses = load_save_from_json()
-    if solution_data == None:
-        solution_data = {}
-        correct_guesses = []
+    if solution_data == {}:
         for key in solution.keys():
             solution_data[key] = []
     return solution_data, correct_guesses
 
 
-def show_frame(from_frame, to_frame):
-    from_frame.forget()
-    to_frame.tkraise()
-    to_frame.pack()
+def loading_screen_generation():
+    print("test")
+
+
+def unlock_screen_generation():
+    frame_unlock = tk.Frame(main)
+    quit_button = tk.Button(
+        frame_unlock,
+        text="The giant door opens slowly...",
+        command=lambda: save_progress(),
+    )
+    quit_button.pack(ipadx=5, ipady=5, expand=True, side="top")
 
 
 def pyramid_generation(rune_states):
+
+    frame_pyramid = tk.Frame(main, background="")
+    frame_pyramid.pack()
+
     buttons = []
     for i in range(21):
         button = tk.Button(
@@ -98,6 +170,17 @@ def pyramid_generation(rune_states):
     buttons[19].grid(row=6, column=4, padx=2, pady=2)
     buttons[20].grid(row=6, column=5, padx=2, pady=2)
 
+    return frame_pyramid
+
+
+def keypad_frame_list_generation(rune_states):
+    keypad_frame_list = []
+    for level, runelist  in rune_states.items():
+        new_frame = tk.Frame(main, background="")
+        keypad_generation(new_frame, runelist)
+        keypad_frame_list.append(new_frame)
+    return keypad_frame_list
+
 
 def keypad_generation(frame, keydial_rune_states):
     keypad_buttons = []
@@ -155,6 +238,17 @@ def keypad_generation(frame, keydial_rune_states):
     keypad_reset.grid(row=2, column=5)
 
 
+def show_frame(from_frame, to_frame):
+    from_frame.forget()
+    to_frame.tkraise()
+    to_frame.pack()
+
+
+'''
+Front and backend manipulation
+'''
+
+
 def pyramid_recoloring(buttons, rune_states):
     # re_coloring pyrimid panels, depending on if solved or not
     for index, item in enumerate(list(rune_states.keys())):
@@ -166,16 +260,6 @@ def pyramid_recoloring(buttons, rune_states):
         button_thing = buttons[solved]
         button_thing.config(bg="green")
         button_thing.config(state=tk.DISABLED)
-
-
-def load_runes(image_name_list):
-    returnlist = []
-    for name in image_name_list:
-        img = tk.PhotoImage(
-            file=resource_path("./assets/main_assets/runes/" + name + ".png")
-        )
-        returnlist.append(img)
-    return returnlist
 
 
 def select(index, frame):
@@ -213,51 +297,16 @@ def solve(current_solution, solution):
         show_frame(frame_pyramid, frame_unlock)
 
 
-def load_solution_from_json(filename=resource_path("assets/main_assets/solution.json")):
-    try:
-        with open(filename, "r") as json_file:
-            data = json.load(json_file)
-        return data
-    except FileNotFoundError:
-        print(f"File {filename} not found.")
-        return None
-
-
-def save_to_json(solution, correct_guesses, filename="save_data.json"):
-    data = {"solution": solution, "correct_guesses": correct_guesses}
-    with open(filename, "w") as json_file:
-        json.dump(data, json_file, indent=4)
-
-
-def load_save_from_json(filename="save_data.json"):
-    try:
-        with open(filename, "r") as json_file:
-            data = json.load(json_file)
-        return data["solution"], data["correct_guesses"]
-    except FileNotFoundError:
-        print(f"File {filename} not found.")
-        return None, None
-
-
-def save_progress():
-    save_to_json(rune_states, correct_guesses)
-    main.destroy()
-
 if __name__ == "__main__":
+
     # Basic Setup
-    main = tk.Tk()
-    main.title("Mad Mages Puzzle Door")
-    main.geometry("700x420")
-    main.resizable(False, False)
-    main.iconbitmap(resource_path("assets/main_assets/icon.ico"))
+    main = basic_setup()
 
     background_img = tk.PhotoImage(file=resource_path("assets/main_assets/main_background.png"))
     background_label = tk.Label(main, image=background_img)
     background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    number_1 = tk.PhotoImage(file=resource_path("assets/main_assets/I.png"))
-    
-    solution = load_solution_from_json()
+    # creates images for the runes
     runes =[
             "Anarath",
             "Angras",
@@ -269,32 +318,22 @@ if __name__ == "__main__":
             "Savaros",
             "Ullathar",
         ]
-    # creates images for the runes
-    rune_images = load_runes(runes)
+    
+    rune_images = load_rune_images(runes)
 
     # creates/loads memory for every keypad frame
+
+    solution = load_solution_from_json()
     rune_states, correct_guesses = create_rune_memory(solution)
 
     # Create the pyramid frame and populate
-    frame_pyramid = tk.Frame(main, background="")
-    frame_pyramid.pack()
-    pyramid_generation(rune_states)
+    frame_pyramid = pyramid_generation(rune_states)
     
     # create keypad frames and populate
-    keypad_frame_list = []
-    for level, runelist  in rune_states.items():
-        new_frame = tk.Frame(main, background="")
-        keypad_generation(new_frame, runelist)
-        keypad_frame_list.append(new_frame)
+    keypad_frame_list = keypad_frame_list_generation(rune_states)
 
     # create door unlock frame and populate
-    frame_unlock = tk.Frame(main)
-    quit_button = tk.Button(
-        frame_unlock,
-        text="The giant door opens slowly...",
-        command=lambda: save_progress(),
-    )
-    quit_button.pack(ipadx=5, ipady=5, expand=True, side="top")
+    unlock_screen_generation()
 
     # Main Loop
     frame_pyramid.tkraise()
