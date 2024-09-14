@@ -90,7 +90,7 @@ The Puzzle has mainly 2 components:
 ### Runedial Handouts
 
 An example runedial looks like this:
-![Runedial_example_image]()
+
 
 It's 4 components are:
 
@@ -98,6 +98,8 @@ It's 4 components are:
 2. Runedial
 3. Arrow
 4. Hexagon Scheme
+
+![Level_1_example](https://github.com/user-attachments/assets/59bce3b0-c48e-43b4-98b2-7c57d9496657)
 
 You'll find an explanetion for all of them below.
 
@@ -129,17 +131,16 @@ This final puzzle can only be solved, once **ALL** runedials have been found. No
 
 As stated in the hexagon chapter, the hexagons, when overlapped with eachother start to slowly create a pyramid. Step 1 is finished, once the pyramid has been created.
 
-[full_pyramid.img]
+![Hex solution](https://github.com/user-attachments/assets/d1edede3-82a9-4649-a8fd-0575656b6e07)
 
 #### Step 2. - Translation
 
-The bigger hexagon is meant to represent the location of the runedial and the smaller hexagon an adjacent runedials. So this pyramid can be translated as such.
-
-[pyramid_translation.img]
+The bigger hexagon is meant to represent the location of the runedial and the smaller hexagon an adjacent runedials. So this pyramid can be translated as such. Step 2 is finished once the pyramid has been translated.
+![Translated Pyramid](https://github.com/user-attachments/assets/80ba2a08-9481-4fa8-b03c-6ab273d488e0)
 
 #### Step 3. - Solving the Runedials
 
-blablabla write stuff :)))))
+
 
 ## Future Developement plans
 
