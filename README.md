@@ -76,7 +76,7 @@ The next section is dedicated to explaining the puzzle and how to integrate it t
 
 ### Runedial Door
 
-The idea behind Puzzle isn't that complicated: all you as a DM have to do, is every time the players find the stairs downwards, give them the handout of the door that corresponds to the level they are entering. This means, that they also have to have a key already to even enter the dungeons first level.
+The idea behind Puzzle isn't that complicated: all you as a DM have to do, is every time the players find the stairs downwards, give them the handout of the door that corresponds to the level they are entering. This means, that they also have to have a key already to even enter the dungeons first level, which you can give them in any way you see fit.
 
 Im curretly in the progress of making a document that suggest places for the doors, as well as suggestions for how the keys can be aquired.
 
@@ -107,17 +107,17 @@ You'll find an explanetion for all of them below.
 
 The Level Indicator at the top left corner of each handout is pretty much that: a level indicator. It shows you which handout to give to players when they are entering a new level and the players must later use the levels number as one of the hints to solving the very last puzzle.
 
-### Runedial
+#### Runedial
 
 The Runedial is the big circular tablet at the middle of the handout. It consists of 9 smaller circles, each showing an Elder Rune glowing in red. The "key" to gain access to the next level isn't actually important, so feel free to make up any key for each level taht you wish. The keys they found are more of a red herring, making them seem important, while the real solution at the end comes from the order that the runes are placed in the dial. This will all be explained under the Solution tab.
 
 For now, the Runedial works like a old rotary telephone: you pull the circle around and after release it returns to it's standard position, which is indicated by the arrow. The arrow also serves a part in the final puzzle, which will be explained later.
 
-### The Arrow
+#### The Arrow
 
 The arrow is the isosceles triangle in the middle of the dial. One of the triangles tips is more pointy then other, which is used to point at what the arrow is looking towards. For now, this arrow is used to just show, where the rotation of the rotary dial returns to.
 
-### Hexagon Scheme
+#### Hexagon Scheme
 
 This is the very base of the puzzle. Below the Runedial, a decorated hexagon is shown, with smaller hexagons around it. The hexagon paterns overlap, and start creating shapes, until a pyramid is formed.
 
