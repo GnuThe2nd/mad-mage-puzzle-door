@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import filedialog
 import json
 import os, sys
 
@@ -16,7 +17,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-def load_solution_from_json(filename=resource_path("assets/main_assets/solution.json")):
+def load_solution_from_json(filename=resource_path("solution.json")):
     try:
         with open(filename, "r") as json_file:
             data = json.load(json_file)
@@ -26,13 +27,13 @@ def load_solution_from_json(filename=resource_path("assets/main_assets/solution.
         return {}
 
 
-def save_to_json(solution, correct_guesses, filename="save_data.json"):
+def save_save_to_json(solution, correct_guesses, filename="assets/main_assets/save_data/save_data.json"):
     data = {"solution": solution, "correct_guesses": correct_guesses}
     with open(filename, "w") as json_file:
         json.dump(data, json_file, indent=4)
 
 
-def load_save_from_json(filename="save_data.json"):
+def load_save_from_json(filename="assets/main_assets/save_data/save_data.json"):
     try:
         with open(filename, "r") as json_file:
             data = json.load(json_file)
@@ -43,7 +44,7 @@ def load_save_from_json(filename="save_data.json"):
 
 
 def save_progress():
-    save_to_json(rune_states, correct_guesses)
+    save_save_to_json(rune_states, correct_guesses)
     main.destroy()
 
 
@@ -55,7 +56,6 @@ def load_rune_images(image_name_list):
         )
         returnlist.append(img)
     return returnlist
-
 
 '''
 Generation and population
@@ -82,10 +82,6 @@ def create_rune_memory(solution):  # Rune memory creation
     return solution_data, correct_guesses
 
 
-def loading_screen_generation():
-    print("test")
-
-
 def unlock_screen_generation():
     frame_unlock = tk.Frame(main)
     quit_button = tk.Button(
@@ -93,13 +89,14 @@ def unlock_screen_generation():
         text="The giant door opens slowly...",
         command=lambda: save_progress(),
     )
-    quit_button.pack(ipadx=5, ipady=5, expand=True, side="top")
+    quit_button.pack(expand=True)
+
+    return frame_unlock
 
 
 def pyramid_generation(rune_states):
 
     frame_pyramid = tk.Frame(main, background="")
-    frame_pyramid.pack()
 
     buttons = []
     for i in range(21):
@@ -248,7 +245,6 @@ def show_frame(from_frame, to_frame):
 Front and backend manipulation
 '''
 
-
 def pyramid_recoloring(buttons, rune_states):
     # re_coloring pyrimid panels, depending on if solved or not
     for index, item in enumerate(list(rune_states.keys())):
@@ -296,7 +292,7 @@ def solve(current_solution, solution):
     if current_solution == solution:
         show_frame(frame_pyramid, frame_unlock)
 
-
+    
 if __name__ == "__main__":
 
     # Basic Setup
@@ -333,10 +329,12 @@ if __name__ == "__main__":
     keypad_frame_list = keypad_frame_list_generation(rune_states)
 
     # create door unlock frame and populate
-    unlock_screen_generation()
+    frame_unlock = unlock_screen_generation()
 
     # Main Loop
     frame_pyramid.tkraise()
+    frame_pyramid.pack()
+
     main.protocol("WM_DELETE_WINDOW", lambda: save_progress())
 
     main.mainloop()

@@ -1,0 +1,170 @@
+{
+    "20": {
+        "hex": 1,
+        "solution": [
+            "Nchasme",
+            "Ullathar",
+            "Laebos"
+        ]
+    },
+    "15": {
+        "hex": 2,
+        "solution": [
+            "Anarath",
+            "Angras",
+            "Lammath"
+        ]
+    },
+    "14": {
+        "hex": 3,
+        "solution": [
+            "Korombos",
+            "Anarath",
+            "Nchasme"
+        ]
+    },
+    "11": {
+        "hex": 4,
+        "solution": [
+            "Savaros",
+            "Nchasme",
+            "Lammath"
+        ]
+    },
+    "2": {
+        "hex": 5,
+        "solution": [
+            "Angras",
+            "Laebos",
+            "Korombos"
+        ]
+    },
+    "17": {
+        "hex": 6,
+        "solution": [
+            "Halaster",
+            "Laebos",
+            "Korombos"
+        ]
+    },
+    "12": {
+        "hex": 7,
+        "solution": [
+            "Halaster",
+            "Savaros",
+            "Laebos"
+        ]
+    },
+    "3": {
+        "hex": 8,
+        "solution": [
+            "Laebos",
+            "Anarath",
+            "Savaros"
+        ]
+    },
+    "1": {
+        "hex": 9,
+        "solution": [
+            "Lammath",
+            "Ullathar",
+            "Anarath"
+        ]
+    },
+    "16": {
+        "hex": 10,
+        "solution": [
+            "Korombos",
+            "Laebos",
+            "Angras"
+        ]
+    },
+    "13": {
+        "hex": 11,
+        "solution": [
+            "Anarath",
+            "Korombos",
+            "Ullathar"
+        ]
+    },
+    "19": {
+        "hex": 12,
+        "solution": [
+            "Savaros",
+            "Anarath",
+            "Nchasme"
+        ]
+    },
+    "10": {
+        "hex": 13,
+        "solution": [
+            "Nchasme",
+            "Angras",
+            "Laebos"
+        ]
+    },
+    "9": {
+        "hex": 14,
+        "solution": [
+            "Lammath",
+            "Korombos",
+            "Nchasme"
+        ]
+    },
+    "18": {
+        "hex": 15,
+        "solution": [
+            "Lammath",
+            "Laebos",
+            "Anarath"
+        ]
+    },
+    "21": {
+        "hex": 16,
+        "solution": [
+            "Lammath",
+            "Korombos",
+            "Anarath"
+        ]
+    },
+    "4": {
+        "hex": 17,
+        "solution": [
+            "Savaros",
+            "Nchasme",
+            "Laebos"
+        ]
+    },
+    "8": {
+        "hex": 18,
+        "solution": [
+            "Korombos",
+            "Anarath",
+            "Nchasme"
+        ]
+    },
+    "5": {
+        "hex": 19,
+        "solution": [
+            "Lammath",
+            "Angras",
+            "Anarath"
+        ]
+    },
+    "22": {
+        "hex": 20,
+        "solution": [
+            "Anarath",
+            "Ullathar",
+            "Lammath"
+        ]
+    },
+    "7": {
+        "hex": 21,
+        "solution": [
+            "Nchasme",
+            "Korombos",
+            "Anarath"
+        ]
+    }
+}
