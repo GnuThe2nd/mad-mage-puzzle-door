@@ -23,17 +23,30 @@ def load_solution_from_json(filename=resource_path("solution.json")):
             data = json.load(json_file)
         return data
     except FileNotFoundError:
-        print(f"Solution file {filename} not found.")
-        return {}
+        print(f"Solution file {filename} not found. Searching within program.")
+        try:
+            filename = resource_path("assets/main_assets/data/solution.json")
+            with open(filename, "r") as json_file:
+                data = json.load(json_file)
+            return data
+        except FileNotFoundError:
+            print(f"Solution file {filename} still not found.")
+            return {}
 
 
-def save_save_to_json(solution, correct_guesses, filename="assets/main_assets/save_data/save_data.json"):
+def save_solution_to_json(filename="assets/main_assets/data/solution.json"):
     data = {"solution": solution, "correct_guesses": correct_guesses}
     with open(filename, "w") as json_file:
         json.dump(data, json_file, indent=4)
 
 
-def load_save_from_json(filename="assets/main_assets/save_data/save_data.json"):
+def save_save_to_json(solution, correct_guesses, filename="assets/main_assets/data/save_data.json"):
+    data = {"solution": solution, "correct_guesses": correct_guesses}
+    with open(filename, "w") as json_file:
+        json.dump(data, json_file, indent=4)
+
+
+def load_save_from_json(filename="assets/main_assets/data/save_data.json"):
     try:
         with open(filename, "r") as json_file:
             data = json.load(json_file)
@@ -92,6 +105,19 @@ def unlock_screen_generation():
     quit_button.pack(expand=True)
 
     return frame_unlock
+
+
+def solution_error_screen_generation():
+    frame_solution_error = tk.Frame(main)
+    quit_button = tk.Button(
+        frame_solution_error,
+        text="Could not find solution.json in the same folder. Make sure the file is there and has not been edited.",
+        command=lambda: save_progress(),
+        wraplength=220,
+    )
+    quit_button.pack(expand=True)
+
+    return frame_solution_error
 
 
 def pyramid_generation(rune_states):
@@ -331,9 +357,21 @@ if __name__ == "__main__":
     # create door unlock frame and populate
     frame_unlock = unlock_screen_generation()
 
+
     # Main Loop
-    frame_pyramid.tkraise()
-    frame_pyramid.pack()
+
+    if solution == {}: # if the solution could not be loaded in
+
+        #create solution error screen and display 
+        frame_solution_error = solution_error_screen_generation()
+        frame_solution_error.tkraise()
+        frame_solution_error.pack(expand = True)
+
+
+    else:
+        save_solution_to_json()
+        frame_pyramid.tkraise()
+        frame_pyramid.pack()
 
     main.protocol("WM_DELETE_WINDOW", lambda: save_progress())
 
