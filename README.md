@@ -1,12 +1,14 @@
 # The Mad Mages Puzzle Door V.1
 
-This is a puzzle door add-on for the D&D module "Waterdeep: Dungeon of the Mad Mage", inspired by [Factorio Space Exploration](https://spaceexploration.miraheze.org/wiki/Main_Page) Alternate Ending puzzle. This page is meant for the DM's eyes only, as it contains code and solution for the door. The project offers:
+This is a puzzle door add-on for the D&D module "Waterdeep: Dungeon of the Mad Mage", inspired by [Factorio Space Exploration](https://spaceexploration.miraheze.org/wiki/Main_Page) Alternate Ending puzzle. This page is for the DM's eyes only, as it contains code and "solution" for the door. 
 
-- A way to inspire the players to keep exploring every level fully
-- A puzzle door entry to the Mad Mages Lair, that cannot be solved without exploring every level (except the Lost Level)
-- A simple way to generate a random solution for each playthrough
-- Generates 21 custom Runedial door handouts, one for each level.
-- Generates a final .exe file, that you can share with the players to solve on their own computer
+The project offers:
+
+- A way to inspire the players to keep exploring every level fully.
+- A puzzle door entry to the Mad Mages Lair, that cannot be solved without exploring every level (except the Lost Level).
+- A simple way to generate a random solution for each campaign.
+- 21 custom Runedial door handouts, one for each level.
+- A final Mad Mages Puzzle Door.exe file, that you can share with the players to solve on their own computer.
 
 In summery, the project adds a puzzle door for every level (except Lost Level) and culminates with the giant puzzle door at the Mad Mages Lair.
 
@@ -31,14 +33,17 @@ In summery, the project adds a puzzle door for every level (except Lost Level) a
 
 ## The story of how it came to be
 
-I have been a DM since 2019 and had been wanting to run "Waterdeep: Dungeon of the Mad Mage" for my group for a while, combined with "Keys From the Golden Vault". I told my players that this would be a stealthy heist campaign and they all made fragile characters, with great out of combat utility but little combat power. Now, for those who don't know, the Mad Mage's Dungeon is not exactly what anyone would call "safe". Thus it came apparent to me, that my players would most likely try to sneak through the entire thing, with zero to non interraction with any of the cool stuff.
+I have been a DM since 2019 and wanted to run "Waterdeep: Dungeon of the Mad Mage" for my group. In combination with "Keys From the Golden Vault", I planned it as a stealthy heist campaign, yet failed to realise that the all players would make fragile stealthy characters, with great utility but little combat power. Now, for those who don't know, the Mad Mage's Dungeon is not exactly what anyone would call "safe". Thus it came apparent, that my players would most likely try to sneak through the entire thing, with zero to non interraction with any of the cool stuff. So I put my brain to work.
 
 My plan was simple: Every level of the Undermountiain would have a "puzzle" door that requires a key to unlock it, and to get the keys, the players would have to explore all of the dungeon and possibly finish a heist. The first level was a blast and it seemed my idea worked out well.
 
 Some time after I was watching DoshDoshington's Factorio Space Exploration run on Youtube and thought that the alternate ending puzzle was very interresting and decided to adapt it to D&D. Sadly, Factorio requires the player to do 3D vector math and since my table harboured players with nonexsistant mathematical backgrounds... I ended up writing this project.
 
-In basic summery, I use a combination of Elder Runes and hexagons. There were exactly 9 Elder Runes, which made for a nice keydial and there were almost enought levels to build a nice pyramid out of the hexagons. So I went ahead with this small passion project and had fun doing it. Feel free to use this in your games, however you see fit.
+In basic summery, I use a combination of Elder Runes and hexagons. There were exactly 9 Elder Runes, which made for a nice keydial and there were almost enough levels to build a nice pyramid out of the hexagons. I went ahead with this small passion project and had fun doing it. 
 
+Feel free to use this project however you see fit.
+
+Preview of the final program:
 ![Github Readme pyramid](https://github.com/user-attachments/assets/38209536-3dfe-47e4-9792-dc60a2386e50)
 ![Github readme keydial](https://github.com/user-attachments/assets/dcef43aa-44c0-4079-99c9-460843f3284c)
 
@@ -46,7 +51,14 @@ In basic summery, I use a combination of Elder Runes and hexagons. There were ex
 
 If you wish to compile the code yourself, please refer to [Compile](#Compile).
 
-Otherwise, just download and run Setup.exe.
+Otherwise, follow these steps:
+1. Create a new folder
+2. Download *Setup.exe* and *Mad Mages Puzzle Door.exe*
+3. Put them in the folder you created
+4. Run *Setup.exe*
+5. Once *Setup.exe* has finished, run *Mad Mages Puzzle Door.exe* once. Make sure that the solution.json file is in the same folder as *Mad Mages Puzzle Door.exe*
+
+After this, you can print out or send them the handouts digitally. Once they reach the very last layer, you can send them the *Mad Mages Puzzle Door.exe* to solve. You do not have to send them any other files, the solution.json file must be in the same folder only once, when you run the *Mad Mages Puzzle Door.exe* for the first time. I advise against sedning them the solution.json file, since it can be read by the players to figure out the solution.
 
 ### Prerequisites
 
@@ -60,7 +72,16 @@ You must have these dependancies installed to compile the program from scratch. 
 
 ### Compile
 
-The project is set up in a way, that you should only compile Setup.py (replace path_to_Setup.py) and add the filepaths of assets (replace path_to_assets_folder) and Main.py (replace path_to_Main.py) as data:
+I used pyinstaller to compile both programs to an exe file. To install pyinsatller you can do
+
+> $ pip install pyinstaller
+
+To install PIL, do
+
+> $ pip install pillow
+
+#### Compile Setup.py
+Here is the pyinstaller command to compile Setup.py to *Setup.exe*
 
 > $ pyinstaller --noconfirm --onefile --console --name "Setup" --add-data "path_to_assets_folder;assets/" --add-data "path_to_Main.py;." "path_to_Setup.py"
 
@@ -68,7 +89,13 @@ After this, you can just run Setup.exe and it will generate an output folder wit
 
 1. The Runedial handouts
 2. solution.json
-3. Mad Mage's Puzzle Door.exe
+
+#### Compile Main.py
+Here is the pyinstaller command to compile Main.py to *Mad Mages Puzzle Door.exe*
+
+> $ pyinstaller  --noconfirm --onefile --windowed --name "Mad Mages Puzzle Door" --distpath "output" --specpath "output/TEMP" --workpath "output/TEMP" --add-data "{asset_folder_path};./assets/main_assets/" --icon "{icon_path}" "{script_path}"'
+
+After this, you can just run *Mad Mages Puzzle Door.exe*. Make sure that before running, the solution.json file is generated and in the same folder, but you only need to do it once. After this you can send the *Mad Mages Puzzle Door.exe* to your players and let them have a go at it.
 
 ## Usage in game
 
