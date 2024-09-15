@@ -6,7 +6,7 @@ import os, sys
 
 '''
 Compile command:
-pyinstaller command: pyinstaller --noconfirm --onefile --console --name "Setup" --add-data "{path_to_assets_folder};assets/" --add-data "{path_to_Main.py};." "{path_to_Setup.py}"
+pyinstaller command: pyinstaller --noconfirm --onefile --console --name "Setup" --add-data "{path_to_assets_folder};assets/" "{path_to_Setup.py}"
 '''
 
 def generate_output_dir():
@@ -214,13 +214,6 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-def generate_main_exe_file():
-    icon_path = resource_path("./assets/main_assets/icon.ico")
-    asset_folder_path = resource_path("./assets/main_assets")
-    script_path = resource_path("./main.py")
-    command = f'pyinstaller  --noconfirm --onefile --windowed --name "Mad Mages Puzzle Door" --distpath "output" --specpath "output/TEMP" --workpath "output/TEMP" --add-data "{asset_folder_path};./assets/main_assets/" --icon "{icon_path}" "{script_path}"' 
-    os.system(command)
-
 if __name__ == "__main__":
 
     print("Generating output directory...", end="", flush=True)
@@ -242,8 +235,4 @@ if __name__ == "__main__":
     save_to_json(runedial_dict_complete)
     print("Done")
 
-    print("Generating .exe file...", end="", flush=True)
-    generate_main_exe_file()
-    print("Done!")
-
-    print("All generation completed!")
+    input("All generation completed! Click any button to continue...")
