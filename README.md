@@ -172,6 +172,7 @@ The bigger hexagon is meant to represent the location of the runedial and the sm
 ## Future Developement plans
 
 - GUI improvements
+- Making the download and image generation process better, including a bash command for simple donwload enad execution
 - General Code Cleanup
 - Image generation improvements
 
