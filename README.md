@@ -179,3 +179,4 @@ The bigger hexagon is meant to represent the location of the runedial and the sm
 ## Author
 
 Karl Martin Puna - \*Everything you see in this project :)
+NB! No AI was used in the making of this project
